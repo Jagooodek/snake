@@ -47,7 +47,7 @@ public class Board extends JPanel implements ActionListener {
         loadImages();
         directionAdapter = new DirectionAdapter();
     }
-
+// to jest zmiana żeby sprawdzić jak działa git
     private void initGame() {
         main.getScorePanel().initTimer();
         points = 0;
