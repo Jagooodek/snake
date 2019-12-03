@@ -1,9 +1,9 @@
+/*
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ScorePanel extends JPanel {
+    //TODO zostaw tylko rzeczy związane z rysowaniem
 
     private final int WIDTH = 300;
     private final int HEIGHT = 50;
@@ -14,11 +14,9 @@ public class ScorePanel extends JPanel {
     private int points;
 
     private Main main;
-    private Board board;
+    private GamePanel gamePanel;
 
-    ScorePanel(Main main) {
-        this.main = main;
-        board = main.getBoard();
+    ScorePanel() {
         initPanel();
     }
 
@@ -80,7 +78,7 @@ public class ScorePanel extends JPanel {
     public void initTimer() {
 
         timer = new Timer(1, actionEvent -> {
-            points = board.getPoints();
+            points = gamePanel.getPoints();
             if(points < 0){
                 points = 0;
             }
@@ -95,3 +93,4 @@ public class ScorePanel extends JPanel {
     }
 
 }
+*/
