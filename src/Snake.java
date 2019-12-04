@@ -1,15 +1,17 @@
+import javafx.scene.layout.BorderRepeat;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Snake implements ActionListener {
-    JFrame jFrame;
+
+    private JFrame jFrame;
     private Timer timer;
-    Direction direction;
+    private Timer pauseTimer;
+    private Direction direction;
     private DirectionAdapter directionAdapter;
 
     private int bodySize;
@@ -18,38 +20,88 @@ public class Snake implements ActionListener {
     private int speed;
     private int points;
 
-    private boolean inGame;
-
     private final int[] POSITION_X = new int[900];
     private final int[] POSITION_Y = new int[900];
 
+    private ArrayList<PositionData> positionData;
+
+    private BeforeGameJPanel beforeGameJPanel;
+    private AfterGameJPanel afterGameJPanel;
+    private KeyListener keyListener;
+
     private GamePanel gamePanel;
-    //private ScorePanel scorePanel;
+    private ScorePanel scorePanel;
 
     Snake(JFrame jFrame) {
         this.jFrame = jFrame;
-        initPanels();
-        initGame();
+        initBeforeGamePanel();
     }
 
-    public int getScore() {
-
-        System.out.println("here");
-        while(inGame)
-        {
-
-        }
-        return points;
+    Snake(JFrame jFrame, int score) {
+        this.jFrame = jFrame;
+        initAfterGamePanel(score);
     }
 
-    private void initPanels() {
+    private void initBeforeGamePanel() {
+        beforeGameJPanel = new BeforeGameJPanel();
+        keyListener = new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent keyEvent) {
+                beforeGameJPanel.removeKeyListener(this);
+                jFrame.remove(beforeGameJPanel);
+                initGame();
+            }
+        };
+        jFrame.add(beforeGameJPanel);
+        jFrame.pack();
+        beforeGameJPanel.addKeyListener(keyListener);
+        beforeGameJPanel.requestFocus();
+        jFrame.setLocationRelativeTo(null);
+        jFrame.setVisible(true);
+    }
+
+    private void initAfterGamePanel(int score) {
+        afterGameJPanel = new AfterGameJPanel(score);
+        keyListener = new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent keyEvent) {
+                afterGameJPanel.removeKeyListener(this);
+                jFrame.remove(afterGameJPanel);
+                initGame();
+            }
+        };
+
+        jFrame.add(afterGameJPanel);
+        jFrame.pack();
+
+        afterGameJPanel.setPaused(true);
+
+        pauseTimer = new Timer(1000, actionEvent -> {
+            afterGameJPanel.addKeyListener(keyListener);
+            afterGameJPanel.requestFocus();
+            afterGameJPanel.setPaused(false);
+            pauseTimer.stop();
+        });
+
+        pauseTimer.start();
+
+
+    }
+
+    private void initGamePanels() {
         gamePanel = new GamePanel();
+        scorePanel = new ScorePanel();
         jFrame.add(gamePanel, BorderLayout.PAGE_START);
+        jFrame.add(scorePanel, BorderLayout.PAGE_END);
         jFrame.pack();
     }
 
     private void initGame() {
-        inGame = true;
+        initGamePanels();
+        initBody();
+        placeApple();
+        gamePanel.setPositions(positionData, appleX, appleY);
+        gamePanel.repaint();
 
         directionAdapter = new DirectionAdapter();
         gamePanel.addKeyListener(directionAdapter);
@@ -59,12 +111,12 @@ public class Snake implements ActionListener {
 
         points = 0;
 
-        placeApple();
-        initBody();
+        scorePanel.start();
         initTimer();
     }
 
     private void initBody() {
+
         bodySize = 3;
         POSITION_Y[0] = 150;
         POSITION_X[0] = 150;
@@ -73,6 +125,14 @@ public class Snake implements ActionListener {
             POSITION_Y[i] = POSITION_Y[i-1];
             POSITION_X[i] = POSITION_X[i-1] + 10;
 
+        }
+
+        positionData = new ArrayList<>();
+
+        positionData.add(new PositionData(150, 150, Direction.LEFT));
+
+        for (int i = 0; i < 3; i++) {
+            positionData.add(new PositionData(160 + (i*10), 150, Direction.LEFT ));
         }
     }
 
@@ -94,18 +154,22 @@ public class Snake implements ActionListener {
 
             }
         }
+
+        for (int i = 0; i < positionData.size() ; i++) {
+            if(positionData.get(i).checkCollision(appleX, appleY)) {
+                placeApple();
+                break;
+            }
+        }
     }
 
     private void checkApple() {
 
-        if  (POSITION_X[0] == appleX && POSITION_Y[0] == appleY) {
+        if(positionData.get(0).checkCollision(appleX, appleY)) {
 
-            bodySize += 3;
             points += 1000;
-
             for (int i = 0; i < 3; i++) {
-                POSITION_X[bodySize - i] = POSITION_X[bodySize-3];
-                POSITION_Y[bodySize - i] = POSITION_Y[bodySize-3];
+                positionData.add(positionData.get(positionData.size() - 1).copy());
             }
 
             speedUp();
@@ -125,103 +189,68 @@ public class Snake implements ActionListener {
 
     private void move() {
 
-        if(!checkCollision(direction)) {
-            for (int i = bodySize; i >= 1 ; i--) {
-                POSITION_X[i] = POSITION_X[i-1];
-                POSITION_Y[i] = POSITION_Y[i-1];
-            }
-            if(direction.getDirection() == direction.LEFT) {
-                POSITION_X[0] -= 10;
-            }
-
-            if(direction.getDirection() == direction.RIGHT) {
-                POSITION_X[0] += 10;
-            }
-
-            if(direction.getDirection() == direction.DOWN) {
-                POSITION_Y[0] += 10;
-            }
-
-            if(direction.getDirection() == direction.UP) {
-                POSITION_Y[0] -= 10;
-            }
+        for(int i  = positionData.size() - 1; i > 0; i --) {
+            positionData.set(i, positionData.get(i-1).copy());
         }
 
-    }
-
-    private boolean checkCollision(Direction direction)  {
-        boolean collision = false;
-        if(direction.getDirection() == Direction.UP) {
-            if(POSITION_Y[0] - 10 < 0){
-                collision = true;
-            }
-            for (int i = 2; i < bodySize; i++) {
-                if(POSITION_X[i] == POSITION_X[0] && POSITION_Y[i] == POSITION_Y[0] - 10 )
-                {
-                    collision = true;
-                }
-            }
+        if(direction.getDirection() == direction.LEFT) {
+            positionData.get(0).addToX(-10);
         }
 
-        if(direction.getDirection() == Direction.DOWN) {
-            if(POSITION_Y[0] + 10 >= 300){
-                collision = true;
-            }
-            for (int i = 2; i < bodySize; i++) {
-                if(POSITION_X[i] == POSITION_X[0] && POSITION_Y[i] == POSITION_Y[0] + 10 )
-                {
-                    collision = true;
-                }
-            }
+        if(direction.getDirection() == direction.RIGHT) {
+            positionData.get(0).addToX(10);
         }
 
-        if(direction.getDirection() == Direction.LEFT) {
-            if(POSITION_X[0] - 10 < 0){
-                collision = true;
-            }
-            for (int i = 2; i < bodySize; i++) {
-                if(POSITION_X[i] == POSITION_X[0] - 10 && POSITION_Y[i] == POSITION_Y[0] )
-                {
-                    collision = true;
-                }
-            }
-
+        if(direction.getDirection() == direction.DOWN) {
+            positionData.get(0).addToY(10);
         }
 
-        if(direction.getDirection() == Direction.RIGHT) {
-            if(POSITION_X[0] + 10 >= 300) {
-                collision = true;
-            }
-            for (int i = 2; i < bodySize; i++) {
-                if(POSITION_X[i] == POSITION_X[0] + 10 && POSITION_Y[i] == POSITION_Y[0] )
-                {
-                    collision = true;
-                }
-            }
-
+        if(direction.getDirection() == direction.UP) {
+            positionData.get(0).addToY(-10);
         }
 
-        if(collision) {
+        if(checkCollision()) {
             endGame();
         }
 
-        return collision;
+        direction.setChangeable(true);
+    }
+
+    private boolean checkCollision()  {
+
+        int headX = positionData.get(0).getX();
+        int headY = positionData.get(0).getY();
+
+        if(headX < 0 || headX >= 300 || headY < 0 || headY >= 300)
+            return true;
+
+        for (int i = 1; i < positionData.size() - 1; i++) {
+            if(positionData.get(i).checkCollision(headX, headY))
+                return true;
+        }
+
+        return false;
     }
 
     private void endGame() {
+        timer.stop();
         jFrame.remove(gamePanel);
+        jFrame.remove(scorePanel);
+        new Snake(jFrame, points);
     }
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-
-        points -= 10;
+        if(points > 0) {
+            points -= 10;
+            scorePanel.setPoints(points);
+        }
         move();
         checkApple();
-        gamePanel.setPositions(POSITION_X, POSITION_Y, bodySize, appleX, appleY);
-        gamePanel.repaint();
-        direction.setChangeable(true);
 
+        gamePanel.setPositions(positionData, appleX, appleY);
+        gamePanel.repaint();
+        scorePanel.setPoints(points);
     }
 
     private class DirectionAdapter extends KeyAdapter {
@@ -249,51 +278,115 @@ public class Snake implements ActionListener {
         }
     }
 
-    private class Direction {
-        public final static int UP = 1;
-        public final static int DOWN = 2;
-        public final static int RIGHT = 3;
-        public final static int LEFT = 4;
+    class AfterGameJPanel extends JPanel {
 
-        private int previousDirection;
-        private int direction;
-        private boolean isChangeable;
+        private final int PANEL_WIDTH = 300;
+        private final  int PANEL_HEIGHT = 300;
+        private boolean isPaused;
+        private int lastGameScore;
 
-
-        Direction() {
-            direction = LEFT;
-            isChangeable = true;
+        AfterGameJPanel(int score) {
+            super();
+            initPanel();
+            lastGameScore = score;
         }
 
-        public int getDirection() {
-            return direction;
+
+        private void initPanel() {
+            setBackground(Color.BLACK);
+            setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
+            setFocusable(true);
         }
 
-        public int getPreviousDirection() {
-            return previousDirection;
+        public void setPaused(boolean isPaused) {
+            this.isPaused = isPaused;
+            repaint();
         }
 
-        public void setDirection(int newDirection) {
-            if(isChangeable){
-                if ((newDirection == 1 || newDirection == 2) && (direction == 3 || direction == 4)) {
-                    previousDirection = direction;
-                    direction = newDirection;
-                    isChangeable = false;
-                }
-                if((newDirection == 3 || newDirection == 4) && (direction == 1 || direction == 2))
-                {
-                    previousDirection = newDirection;
-                    direction = newDirection;
-                    isChangeable = false;
-                }
-            }
+        @Override
+        protected void paintComponent(Graphics graphics) {
+            super.paintComponent(graphics);
+            doDrawing(graphics);
         }
 
-        public void setChangeable(boolean isChangeable)
-        {
-            this.isChangeable = isChangeable;
+        private void doDrawing(Graphics g) {
+            String string = "Press any key to start...";
+            String gameOver = "GAME OVER";
+            //String score = "You lose with a snake length of " + (bodySize + 1);
+            String score = lastGameScore + " points.";
+
+            int gameOverHeight = 30;
+            int scoreHeight = 18;
+            int fontHeight = 18;
+
+            Font gameOverFont = new Font("Helvetica", Font.BOLD, gameOverHeight);
+            Font font = new Font("Helvetica", Font.PLAIN, fontHeight);
+            Font scoreFont = new Font ("Helvetica", Font.ITALIC, scoreHeight);
+
+            FontMetrics fontMetrics = getFontMetrics(font);
+            FontMetrics gameOverFontMetrics = getFontMetrics(gameOverFont);
+            FontMetrics scoreFontMetrics = getFontMetrics(scoreFont);
+
+
+            int gap = 30;
+            int bigGap = (PANEL_HEIGHT - (2*gap) - gameOverHeight - scoreHeight - fontHeight)/2;
+
+            int gameOverX = ((PANEL_WIDTH - gameOverFontMetrics.stringWidth(gameOver))/2);
+            int gameOverY = bigGap + gameOverHeight;
+
+            int scoreX = ((PANEL_WIDTH - scoreFontMetrics.stringWidth(score))/2);
+            int scoreY = bigGap + gameOverHeight + gap + scoreHeight;
+
+            int startX = ((PANEL_WIDTH - fontMetrics.stringWidth(string))/2);
+            int startY =  PANEL_HEIGHT - bigGap;
+
+            g.setColor(Color.white);
+
+            g.setFont(gameOverFont);
+            g.drawString(gameOver, gameOverX, gameOverY);
+
+            g.setFont(scoreFont);
+            g.drawString(score, scoreX, scoreY);
+
+            g.setFont(font);
+            if(!isPaused)
+                g.drawString(string, startX, startY);
         }
     }
 
+    class BeforeGameJPanel extends JPanel {
+
+        private final int PANEL_WIDTH = 300;
+        private final  int PANEL_HEIGHT = 300;
+
+        BeforeGameJPanel() {
+            super();
+            initPanel();
+        }
+
+        private void initPanel() {
+            setBackground(Color.BLACK);
+            setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
+            setFocusable(true);
+            setVisible(true);
+        }
+
+
+        @Override
+        protected void paintComponent(Graphics graphics) {
+            super.paintComponent(graphics);
+            doDrawing(graphics);
+        }
+
+        private void doDrawing(Graphics g) {
+            String string = "Press any key to start...";
+            Font font = new Font("Helvetica", Font.PLAIN, 18);
+            FontMetrics fontMetrics = getFontMetrics(font);
+
+            g.setColor(Color.white);
+            g.setFont(font);
+            g.drawString(string, (PANEL_WIDTH - fontMetrics.stringWidth(string))/2, PANEL_HEIGHT/2);
+        }
+    }
 
 }
