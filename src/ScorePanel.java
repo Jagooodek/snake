@@ -1,4 +1,4 @@
-/*
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,9 +12,6 @@ public class ScorePanel extends JPanel {
 
     private int time;
     private int points;
-
-    private Main main;
-    private GamePanel gamePanel;
 
     ScorePanel() {
         initPanel();
@@ -40,6 +37,7 @@ public class ScorePanel extends JPanel {
     private void paintPoints(Graphics g) {
         g.drawString(points + "", WIDTH/4, HEIGHT/2);
     }
+
     private void paintTime(Graphics g) {
         g.drawString(timeToString(time), WIDTH/4*3, HEIGHT/2);
     }
@@ -51,7 +49,6 @@ public class ScorePanel extends JPanel {
         int seconds = timeInSeconds - (minutes * 60);
 
         String timeAfterSecondsString;
-        String minutesString;
         String secondsString;
 
         if(timeAfterSeconds < 100){
@@ -75,10 +72,9 @@ public class ScorePanel extends JPanel {
         return string;
     }
 
-    public void initTimer() {
+    private void initTimer() {
 
         timer = new Timer(1, actionEvent -> {
-            points = gamePanel.getPoints();
             if(points < 0){
                 points = 0;
             }
@@ -88,9 +84,14 @@ public class ScorePanel extends JPanel {
         timer.start();
     }
 
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
     public void start(){
+        points = 0;
         initTimer();
     }
 
 }
-*/
+

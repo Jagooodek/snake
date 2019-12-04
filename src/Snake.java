@@ -1,12 +1,16 @@
+import javafx.scene.layout.BorderRepeat;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
 
 public class Snake implements ActionListener {
-    JFrame jFrame;
+
+    private JFrame jFrame;
     private Timer timer;
-    Direction direction;
+    private Timer pauseTimer;
+    private Direction direction;
     private DirectionAdapter directionAdapter;
 
     private int bodySize;
@@ -23,7 +27,7 @@ public class Snake implements ActionListener {
     private KeyListener keyListener;
 
     private GamePanel gamePanel;
-    //private ScorePanel scorePanel;
+    private ScorePanel scorePanel;
 
     Snake(JFrame jFrame) {
         this.jFrame = jFrame;
@@ -49,10 +53,12 @@ public class Snake implements ActionListener {
         jFrame.pack();
         beforeGameJPanel.addKeyListener(keyListener);
         beforeGameJPanel.requestFocus();
+        jFrame.setLocationRelativeTo(null);
+        jFrame.setVisible(true);
     }
 
     private void initAfterGamePanel(int score) {
-        afterGameJPanel = new AfterGameJPanel();
+        afterGameJPanel = new AfterGameJPanel(score);
         keyListener = new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent keyEvent) {
@@ -64,13 +70,26 @@ public class Snake implements ActionListener {
 
         jFrame.add(afterGameJPanel);
         jFrame.pack();
-        afterGameJPanel.addKeyListener(keyListener);
-        afterGameJPanel.requestFocus();
+
+        afterGameJPanel.setPaused(true);
+
+        pauseTimer = new Timer(1000, actionEvent -> {
+            afterGameJPanel.addKeyListener(keyListener);
+            afterGameJPanel.requestFocus();
+            afterGameJPanel.setPaused(false);
+            pauseTimer.stop();
+        });
+
+        pauseTimer.start();
+
+
     }
 
     private void initGamePanels() {
         gamePanel = new GamePanel();
+        scorePanel = new ScorePanel();
         jFrame.add(gamePanel, BorderLayout.PAGE_START);
+        jFrame.add(scorePanel, BorderLayout.PAGE_END);
         jFrame.pack();
     }
 
@@ -89,7 +108,7 @@ public class Snake implements ActionListener {
 
         points = 0;
 
-
+        scorePanel.start();
         initTimer();
     }
 
@@ -240,18 +259,20 @@ public class Snake implements ActionListener {
     private void endGame() {
         timer.stop();
         jFrame.remove(gamePanel);
+        jFrame.remove(scorePanel);
         new Snake(jFrame, points);
     }
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-
-        points -= 10;
+        if(points > 0)
+            points -= 10;
         move();
         checkApple();
         gamePanel.setPositions(POSITION_X, POSITION_Y, bodySize, appleX, appleY);
         gamePanel.repaint();
         direction.setChangeable(true);
+        scorePanel.setPoints(points);
 
     }
 
@@ -330,21 +351,25 @@ public class Snake implements ActionListener {
 
         private final int PANEL_WIDTH = 300;
         private final  int PANEL_HEIGHT = 300;
-        private int points;
+        private boolean isPaused;
+        private int lastGameScore;
 
-        AfterGameJPanel() {
+        AfterGameJPanel(int score) {
             super();
             initPanel();
+            lastGameScore = score;
         }
 
-        public void setPoints(int points) {
-            this.points = points;
-        }
 
         private void initPanel() {
             setBackground(Color.BLACK);
             setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
             setFocusable(true);
+        }
+
+        public void setPaused(boolean isPaused) {
+            this.isPaused = isPaused;
+            repaint();
         }
 
         @Override
@@ -357,7 +382,7 @@ public class Snake implements ActionListener {
             String string = "Press any key to start...";
             String gameOver = "GAME OVER";
             //String score = "You lose with a snake length of " + (bodySize + 1);
-            String score = points + " points.";
+            String score = lastGameScore + " points.";
 
             int gameOverHeight = 30;
             int scoreHeight = 18;
@@ -393,7 +418,8 @@ public class Snake implements ActionListener {
             g.drawString(score, scoreX, scoreY);
 
             g.setFont(font);
-            g.drawString(string, startX, startY);
+            if(!isPaused)
+                g.drawString(string, startX, startY);
         }
     }
 
@@ -431,7 +457,6 @@ public class Snake implements ActionListener {
             g.drawString(string, (PANEL_WIDTH - fontMetrics.stringWidth(string))/2, PANEL_HEIGHT/2);
         }
     }
-
 
 
 }

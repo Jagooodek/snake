@@ -19,9 +19,7 @@ public class Main {
         jFrame = new JFrame();
         jFrame.setResizable(false);
         jFrame.setTitle("Snake");
-        jFrame.setLocationRelativeTo(null);
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        jFrame.setVisible(true);
     }
 
     public static void main(String[] args) {
