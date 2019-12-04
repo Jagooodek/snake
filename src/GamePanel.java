@@ -22,6 +22,7 @@ public class GamePanel extends JPanel{
         initBoard();
     }
 
+
     private void initBoard() {
         setBackground(Color.BLACK);
         setFocusable(true);
