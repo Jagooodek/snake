@@ -23,8 +23,6 @@ public class ScorePanel extends JPanel {
         this.setVisible(true);
         this.setFocusable(false);
         this.setBackground(Color.pink);
-
-        System.out.println(this.getGraphics());
     }
 
     @Override

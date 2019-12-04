@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GamePanel extends JPanel{
 
@@ -10,11 +11,7 @@ public class GamePanel extends JPanel{
     private Image apple;
     private Image head;
 
-
-    private int[] positionX = new int[900];
-    private int[] positionY = new int[900];
-
-    private int bodySize;
+    private ArrayList<PositionData> positionData;
     private int appleX;
     private int appleY;
 
@@ -42,19 +39,17 @@ public class GamePanel extends JPanel{
     }
 
     private void doDrawing(Graphics g) {
-            g.drawImage(head, positionX [0], positionY[0], this);
-            for (int i = 1; i <= bodySize ; i++) {
-                g.drawImage(ball, positionX [i], positionY[i], this);
+            g.drawImage(head, positionData.get(0).getX(), positionData.get(0).getY(), this);
+            for (int i = 1; i <= positionData.size() - 1 ; i++) {
+                g.drawImage(ball, positionData.get(i).getX(), positionData.get(i).getY(), this);
             }
             g.drawImage(apple, appleX, appleY, this);
     }
 
-    public void setPositions(int[] x, int[] y, int bodySize, int appleX, int appleY) {
-        this.bodySize = bodySize;
+    public void setPositions(ArrayList<PositionData> positionData, int appleX, int appleY) {
+        this.positionData = positionData;
         this.appleX = appleX;
         this.appleY = appleY;
-        positionX = x;
-        positionY = y;
     }
 
 }
