@@ -177,7 +177,7 @@ public class Snake implements ActionListener {
         int headX = positionData.get(0).getX();
         int headY = positionData.get(0).getY();
 
-        if(headX < 0 || headX >= 300 || headY < 0 || headY >= 300)
+        if(headX < 0 || headX > 290 || headY < 0 || headY > 290)
             return true;
 
         for (int i = 1; i < positionData.size(); i++) {
