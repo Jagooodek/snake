@@ -1,9 +1,7 @@
-
 import javax.swing.*;
 import java.awt.*;
 
 public class ScorePanel extends JPanel {
-    //TODO zostaw tylko rzeczy związane z rysowaniem
 
     private final int WIDTH = 300;
     private final int HEIGHT = 50;

@@ -1,4 +1,3 @@
-
 public class PositionData {
     private int x;
     private int y;

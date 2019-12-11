@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class GamePanel extends JPanel{
 
+
     private final int BOARD_WIDTH = 300;
     private final  int BOARD_HEIGHT = 300;
 
