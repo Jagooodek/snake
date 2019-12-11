@@ -1,5 +1,3 @@
-import com.sun.javafx.scene.traversal.Direction;
-import javafx.geometry.Pos;
 
 public class PositionData {
     private int x;

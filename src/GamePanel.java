@@ -46,10 +46,10 @@ public class GamePanel extends JPanel{
             g.drawImage(apple, appleX, appleY, this);
     }
 
-    public void setPositions(ArrayList<PositionData> positionData, int appleX, int appleY) {
+    public void setPositions(ArrayList<PositionData> positionData, Apple apple) {
         this.positionData = positionData;
-        this.appleX = appleX;
-        this.appleY = appleY;
+        this.appleX = apple.getX();
+        this.appleY = apple.getY();
     }
 
 }

@@ -1,27 +1,19 @@
-import javafx.scene.layout.BorderRepeat;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Snake implements ActionListener {
 
     private JFrame jFrame;
     private Timer timer;
     private Timer pauseTimer;
-    private Direction direction;
     private DirectionAdapter directionAdapter;
+    private Apple apple;
 
     private int add;
-    private int appleX;
-    private int appleY;
     private int speed;
     private int points;
-
-    private final int[] POSITION_X = new int[900];
-    private final int[] POSITION_Y = new int[900];
 
     private ArrayList<PositionData> positionData;
 
@@ -31,7 +23,6 @@ public class Snake implements ActionListener {
 
     private GamePanel gamePanel;
     private ScorePanel scorePanel;
-    private boolean isDirectionChangeable;
     private int nextDirection;
 
     Snake(JFrame jFrame) {
@@ -98,11 +89,9 @@ public class Snake implements ActionListener {
         jFrame.pack();
     }
 
-    private void initGame() {
-        initGamePanels();
-        initBody();
-        placeApple();
-        gamePanel.setPositions(positionData, appleX, appleY);
+    private void initOtherThings() {
+        apple = new Apple(positionData);
+        gamePanel.setPositions(positionData, apple);
         gamePanel.repaint();
 
         directionAdapter = new DirectionAdapter();
@@ -114,13 +103,18 @@ public class Snake implements ActionListener {
 
         scorePanel.start();
         nextDirection = Direction.LEFT;
+    }
+
+    private void initGame() {
+        initGamePanels();
+        initBody();
+        initOtherThings();
         initTimer();
     }
 
     private void initBody() {
 
         positionData = new ArrayList<>();
-
         positionData.add(new PositionData(150, 150, Direction.LEFT));
 
         for (int i = 0; i < 3; i++) {
@@ -132,54 +126,6 @@ public class Snake implements ActionListener {
         speed = 15;
         timer = new Timer(speed, this);
         timer.start();
-    }
-
-    private void placeApple() {
-        Random random = new Random();
-        appleX = (Math.abs(random.nextInt()%29) + 1) * 10;
-        appleY = (Math.abs(random.nextInt()%29) + 1) * 10;
-
-        for (int i = 0; i < positionData.size() ; i++) {
-            if(positionData.get(i).checkCollision(appleX, appleY)) {
-                placeApple();
-                break;
-            }
-        }
-    }
-
-    private void checkApple() {
-        int x = positionData.get(0).getX();
-        int y = positionData.get(0).getY();
-        int direction = positionData.get(0).getDirection();
-        boolean eat = false;
-
-        if(direction == Direction.LEFT) {
-            if(appleX == x - 9 && appleY == y){
-                eat = true;
-            }
-        }
-        if(direction == Direction.RIGHT) {
-            if(appleX == x + 9 && appleY == y){
-                eat = true;
-            }
-        }
-        if(direction == Direction.UP) {
-            if(appleX == x && appleY == y - 9){
-                eat = true;
-            }
-        }
-        if(direction == Direction.DOWN) {
-            if(appleX == x && appleY == y + 9){
-                eat = true;
-            }
-        }
-        if(eat) {
-
-            points += 1000;
-            add = 3;
-            speedUp();
-            placeApple();
-        }
     }
 
     private void speedUp() {
@@ -206,16 +152,16 @@ public class Snake implements ActionListener {
         }
 
         for (int i = 0; i < positionData.size(); i++) {
-            if(positionData.get(i).getDirection() == direction.LEFT)
+            if(positionData.get(i).getDirection() == Direction.LEFT)
                 positionData.get(i).addToX(-1);
 
-            if(positionData.get(i).getDirection() == direction.RIGHT)
+            if(positionData.get(i).getDirection() == Direction.RIGHT)
                 positionData.get(i).addToX(1);
 
-            if(positionData.get(i).getDirection() == direction.UP)
+            if(positionData.get(i).getDirection() == Direction.UP)
                 positionData.get(i).addToY(-1);
 
-            if(positionData.get(i).getDirection() == direction.DOWN)
+            if(positionData.get(i).getDirection() == Direction.DOWN)
                 positionData.get(i).addToY(1);
 
         }
@@ -225,7 +171,7 @@ public class Snake implements ActionListener {
         }
     }
 
-    private boolean checkCollision()  {
+    private boolean checkCollision() {
 
         int headX = positionData.get(0).getX();
         int headY = positionData.get(0).getY();
@@ -239,6 +185,13 @@ public class Snake implements ActionListener {
         }
 
         return false;
+    }
+
+    private void appleBuff() {
+        points += 1000;
+        add = 3;
+        speedUp();
+        apple.placeApple(positionData);
     }
 
     private void endGame() {
@@ -255,8 +208,9 @@ public class Snake implements ActionListener {
             scorePanel.setPoints(points);
         }
         move();
-        checkApple();
-        gamePanel.setPositions(positionData, appleX, appleY);
+        if(apple.checkApple(positionData))
+            appleBuff();
+        gamePanel.setPositions(positionData, apple);
         gamePanel.repaint();
         scorePanel.setPoints(points);
     }
