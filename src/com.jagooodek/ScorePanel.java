@@ -1,3 +1,4 @@
+package com.jagooodek;
 import javax.swing.*;
 import java.awt.*;
 

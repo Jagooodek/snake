@@ -1,3 +1,4 @@
+package com.jagooodek;
 import java.util.ArrayList;
 import java.util.Random;
 

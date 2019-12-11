@@ -1,3 +1,4 @@
+package com.jagooodek;
 public class PositionData {
     private int x;
     private int y;
@@ -19,14 +20,6 @@ public class PositionData {
 
     public int getDirection() {
         return direction;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY (int y) {
-        this.y = y;
     }
 
     public void addToX (int number) {

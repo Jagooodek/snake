@@ -1,4 +1,4 @@
-
+package com.jagooodek;
 import javax.swing.*;
 
 public class Main {
