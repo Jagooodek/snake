@@ -133,6 +133,7 @@ public class Snake implements ActionListener {
         timer.stop();
         if(speed > 5)
         {
+            System.out.println("here");
             speed *= 0.98;
         }
         timer = new Timer(speed, this);
