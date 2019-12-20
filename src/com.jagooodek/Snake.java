@@ -10,13 +10,10 @@ public class Snake implements ActionListener {
     private Timer timer;
     private Timer pauseTimer;
     private DirectionAdapter directionAdapter;
-    private Apple apple;
 
-    private int add;
     private int speed;
-    private int points;
 
-    private ArrayList<PositionData> positionData;
+    private GameData gameData;
 
     private BeforeGameJPanel beforeGameJPanel;
     private AfterGameJPanel afterGameJPanel;
@@ -91,16 +88,12 @@ public class Snake implements ActionListener {
     }
 
     private void initOtherThings() {
-        apple = new Apple(positionData);
-        gamePanel.setPositions(positionData, apple);
+        gamePanel.setPositions(gameData);
         gamePanel.repaint();
 
         directionAdapter = new DirectionAdapter();
         gamePanel.addKeyListener(directionAdapter);
         gamePanel.requestFocus();
-
-        points = 0;
-        add = 0;
 
         scorePanel.start();
         nextDirection = Direction.LEFT;
@@ -108,19 +101,14 @@ public class Snake implements ActionListener {
 
     private void initGame() {
         initGamePanels();
-        initBody();
+        initData();
         initOtherThings();
+
         initTimer();
     }
 
-    private void initBody() {
-
-        positionData = new ArrayList<>();
-        positionData.add(new PositionData(150, 150, Direction.LEFT));
-
-        for (int i = 0; i < 3; i++) {
-            positionData.add(new PositionData(160 + (i*10), 150, Direction.LEFT ));
-        }
+    private void initData() {
+        gameData = new GameData();
     }
 
     private void initTimer() {
@@ -129,97 +117,42 @@ public class Snake implements ActionListener {
         timer.start();
     }
 
-    private void speedUp() {
+    private void newSpeed() {
         timer.stop();
-        if(speed > 5)
-        {
-            System.out.println("here");
-            speed *= 0.98;
-        }
+        speed = gameData.getSpeed();
         timer = new Timer(speed, this);
         timer.start();
-    }
-
-    private void move() {
-
-        if(positionData.get(0).getX() % 10 == 0 && positionData.get(0).getY() % 10 == 0){
-            for (int i = positionData.size() - 1; i > 0 ; i--) {
-                positionData.get(i).setDirection(positionData.get(i - 1).getDirection());
-            }
-            positionData.get(0).setDirection(nextDirection);
-            if(add-->0) {
-                positionData.add(positionData.get(positionData.size()-1).copy());
-                positionData.get(positionData.size() - 1).setDirection(0);
-            }
-        }
-
-        for (int i = 0; i < positionData.size(); i++) {
-            if(positionData.get(i).getDirection() == Direction.LEFT)
-                positionData.get(i).addToX(-1);
-
-            if(positionData.get(i).getDirection() == Direction.RIGHT)
-                positionData.get(i).addToX(1);
-
-            if(positionData.get(i).getDirection() == Direction.UP)
-                positionData.get(i).addToY(-1);
-
-            if(positionData.get(i).getDirection() == Direction.DOWN)
-                positionData.get(i).addToY(1);
-
-        }
-
-        if(checkCollision()) {
-            endGame();
-        }
-    }
-
-    private boolean checkCollision() {
-
-        int headX = positionData.get(0).getX();
-        int headY = positionData.get(0).getY();
-
-        if(headX < 0 || headX > 290 || headY < 0 || headY > 290)
-            return true;
-
-        for (int i = 1; i < positionData.size(); i++) {
-            if(positionData.get(i).checkCollision(headX, headY))
-                return true;
-        }
-
-        return false;
-    }
-
-    private void appleBuff() {
-        points += 1000;
-        add = 3;
-        speedUp();
-        apple.placeApple(positionData);
     }
 
     private void endGame() {
         timer.stop();
         jFrame.remove(gamePanel);
         jFrame.remove(scorePanel);
-        new Snake(jFrame, points);
+        new Snake(jFrame, gameData.getPoints());
     }
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        if(points > 0) {
-            points -= 1;
-            scorePanel.setPoints(points);
+
+        gameData.addPoints(-1);
+        scorePanel.setPoints(gameData.getPoints());
+
+        gameData.move(nextDirection);
+
+        if(gameData.checkCollision())
+            endGame();
+
+        if(gameData.getSpeed() != speed) {
+            newSpeed();
         }
-        move();
-        if(apple.checkApple(positionData))
-            appleBuff();
-        gamePanel.setPositions(positionData, apple);
-        gamePanel.repaint();
-        scorePanel.setPoints(points);
+        gamePanel.setPositions(gameData);
+        scorePanel.setPoints(gameData.getPoints());
     }
 
     private class DirectionAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent keyEvent) {
+            ArrayList<PositionData> positionData = gameData.getPositionData();
             if(keyEvent.getKeyCode() == KeyEvent.VK_LEFT)
             {
                 if(positionData.get(0).getDirection() != Direction.RIGHT && positionData.get(0).getDirection() != Direction.LEFT)
@@ -245,116 +178,4 @@ public class Snake implements ActionListener {
             }
         }
     }
-
-    class AfterGameJPanel extends JPanel {
-
-        private final int PANEL_WIDTH = 300;
-        private final  int PANEL_HEIGHT = 300;
-        private boolean isPaused;
-        private int lastGameScore;
-
-        AfterGameJPanel(int score) {
-            super();
-            initPanel();
-            lastGameScore = score;
-        }
-
-
-        private void initPanel() {
-            setBackground(Color.BLACK);
-            setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-            setFocusable(true);
-        }
-
-        public void setPaused(boolean isPaused) {
-            this.isPaused = isPaused;
-            repaint();
-        }
-
-        @Override
-        protected void paintComponent(Graphics graphics) {
-            super.paintComponent(graphics);
-            doDrawing(graphics);
-        }
-
-        private void doDrawing(Graphics g) {
-            String string = "Press any key to start...";
-            String gameOver = "GAME OVER";
-            //String score = "You lose with a snake length of " + (bodySize + 1);
-            String score = lastGameScore + " points.";
-
-            int gameOverHeight = 30;
-            int scoreHeight = 18;
-            int fontHeight = 18;
-
-            Font gameOverFont = new Font("Helvetica", Font.BOLD, gameOverHeight);
-            Font font = new Font("Helvetica", Font.PLAIN, fontHeight);
-            Font scoreFont = new Font ("Helvetica", Font.ITALIC, scoreHeight);
-
-            FontMetrics fontMetrics = getFontMetrics(font);
-            FontMetrics gameOverFontMetrics = getFontMetrics(gameOverFont);
-            FontMetrics scoreFontMetrics = getFontMetrics(scoreFont);
-
-
-            int gap = 30;
-            int bigGap = (PANEL_HEIGHT - (2*gap) - gameOverHeight - scoreHeight - fontHeight)/2;
-
-            int gameOverX = ((PANEL_WIDTH - gameOverFontMetrics.stringWidth(gameOver))/2);
-            int gameOverY = bigGap + gameOverHeight;
-
-            int scoreX = ((PANEL_WIDTH - scoreFontMetrics.stringWidth(score))/2);
-            int scoreY = bigGap + gameOverHeight + gap + scoreHeight;
-
-            int startX = ((PANEL_WIDTH - fontMetrics.stringWidth(string))/2);
-            int startY =  PANEL_HEIGHT - bigGap;
-
-            g.setColor(Color.white);
-
-            g.setFont(gameOverFont);
-            g.drawString(gameOver, gameOverX, gameOverY);
-
-            g.setFont(scoreFont);
-            g.drawString(score, scoreX, scoreY);
-
-            g.setFont(font);
-            if(!isPaused)
-                g.drawString(string, startX, startY);
-        }
-    }
-
-    class BeforeGameJPanel extends JPanel {
-
-        private final int PANEL_WIDTH = 300;
-        private final  int PANEL_HEIGHT = 300;
-
-        BeforeGameJPanel() {
-            super();
-            initPanel();
-        }
-
-        private void initPanel() {
-            setBackground(Color.BLACK);
-            setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-            setFocusable(true);
-            setVisible(true);
-        }
-
-
-        @Override
-        protected void paintComponent(Graphics graphics) {
-            super.paintComponent(graphics);
-            doDrawing(graphics);
-        }
-
-        private void doDrawing(Graphics g) {
-            String string = "Press any key to start...";
-            Font font = new Font("Helvetica", Font.PLAIN, 18);
-            FontMetrics fontMetrics = getFontMetrics(font);
-
-            g.setColor(Color.white);
-            g.setFont(font);
-            g.drawString(string, (PANEL_WIDTH - fontMetrics.stringWidth(string))/2, PANEL_HEIGHT/2);
-        }
-    }
-
 }

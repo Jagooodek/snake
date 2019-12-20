@@ -14,8 +14,8 @@ public class GamePanel extends JPanel{
     private Image head;
 
     private ArrayList<PositionData> positionData;
-    private int appleX;
-    private int appleY;
+    private ArrayList<Buff> buffsData;
+
 
     GamePanel() {
         initBoard();
@@ -45,13 +45,16 @@ public class GamePanel extends JPanel{
             for (int i = 1; i <= positionData.size() - 1 ; i++) {
                 g.drawImage(ball, positionData.get(i).getX(), positionData.get(i).getY(), this);
             }
-            g.drawImage(apple, appleX, appleY, this);
+
+        for (int i = 0; i < buffsData.size() ; i++) {
+            buffsData.get(i).paint(g, this);
+        }
     }
 
-    public void setPositions(ArrayList<PositionData> positionData, Apple apple) {
-        this.positionData = positionData;
-        this.appleX = apple.getX();
-        this.appleY = apple.getY();
+    public void setPositions(GameData gameData) {
+        this.positionData = gameData.getPositionData();
+        this.buffsData = gameData.getBuffsData();
+        this.repaint();
     }
 
 }
