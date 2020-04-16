@@ -2,9 +2,9 @@ package com.jagooodek;
 public class PositionData {
     private int x;
     private int y;
-    private int direction;
+    Direction direction;
 
-    PositionData(int x, int y, int direction) {
+    PositionData(int x, int y, Direction direction) {
         this.x = x;
         this.y = y;
         this.direction = direction;
@@ -18,7 +18,7 @@ public class PositionData {
         return y;
     }
 
-    public int getDirection() {
+    public Direction getDirection() {
         return direction;
     }
 
@@ -30,7 +30,7 @@ public class PositionData {
         y += number;
     }
 
-    public void setDirection(int direction) {
+    public void setDirection(Direction direction) {
         this.direction = direction;
     }
 

@@ -2,29 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1cb65216-d210-4bf4-a725-589634d241c7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/snakeGame_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com.jagooodek/AfterGameJPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com.jagooodek/BeforeGameJPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com.jagooodek/Buff.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com.jagooodek/GameData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com.jagooodek/SnakeData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Apple.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Apple.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/snake2/META-INF/snake2.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Buff.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Buff.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Direction.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Direction.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/GamePanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/GamePanel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/GameData.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/GameData.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/PositionData.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/PositionData.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/ScorePanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/ScorePanel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake$AfterGameJPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake$AfterGameJPanel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake$BeforeGameJPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake$BeforeGameJPanel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake$AfterGameJPanel.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake$BeforeGameJPanel.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake$DirectionAdapter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake$DirectionAdapter.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/snake2/com/jagooodek/Snake.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com.jagooodek/Apple.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com.jagooodek/Apple.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com.jagooodek/GamePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com.jagooodek/GamePanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com.jagooodek/Buff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com.jagooodek/Buff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com.jagooodek/Direction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com.jagooodek/Direction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com.jagooodek/GameData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com.jagooodek/GameData.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com.jagooodek/PositionData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com.jagooodek/PositionData.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com.jagooodek/Snake.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com.jagooodek/Snake.java" afterDir="false" />
     </list>
@@ -47,6 +39,7 @@
   <component name="ProjectId" id="1V9gmsHTvlcsatrJ7KQ3lLMCxxG" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../JAVA/src/com/company/Main.java" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">

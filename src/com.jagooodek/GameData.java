@@ -13,10 +13,10 @@ public class GameData {
         positionData = new ArrayList<>();
         buffsData = new ArrayList<>();
 
-        positionData.add(new PositionData(150, 150, Direction.LEFT));
+        positionData.add(new PositionData(150, 150, Direction.Left));
 
         for (int i = 0; i < 3; i++) {
-            positionData.add(new PositionData(160 + (i*10), 150, Direction.LEFT ));
+            positionData.add(new PositionData(160 + (i*10), 150, Direction.Left ));
         }
         add = 0;
 
@@ -38,7 +38,7 @@ public class GameData {
         return buffsData;
     }
 
-    public void move(int nextDirection) {
+    public void move(Direction nextDirection) {
 
         if(positionData.get(0).getX() % 10 == 0 && positionData.get(0).getY() % 10 == 0){
             for (int i = positionData.size() - 1; i > 0 ; i--) {
@@ -47,21 +47,21 @@ public class GameData {
             positionData.get(0).setDirection(nextDirection);
             if(add-->0) {
                 positionData.add(positionData.get(positionData.size()-1).copy());
-                positionData.get(positionData.size() - 1).setDirection(0);
+                positionData.get(positionData.size() - 1).setDirection(Direction.None);
             }
         }
 
         for (int i = 0; i < positionData.size(); i++) {
-            if(positionData.get(i).getDirection() == Direction.LEFT)
+            if(positionData.get(i).getDirection() == Direction.Left)
                 positionData.get(i).addToX(-1);
 
-            if(positionData.get(i).getDirection() == Direction.RIGHT)
+            if(positionData.get(i).getDirection() == Direction.Right)
                 positionData.get(i).addToX(1);
 
-            if(positionData.get(i).getDirection() == Direction.UP)
+            if(positionData.get(i).getDirection() == Direction.Up)
                 positionData.get(i).addToY(-1);
 
-            if(positionData.get(i).getDirection() == Direction.DOWN)
+            if(positionData.get(i).getDirection() == Direction.Down)
                 positionData.get(i).addToY(1);
         }
         checkBuffs();

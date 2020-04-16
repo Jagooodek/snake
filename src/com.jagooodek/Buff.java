@@ -39,24 +39,24 @@ public abstract class Buff {
 
         int x = positionData.get(0).getX();
         int y = positionData.get(0).getY();
-        int direction = positionData.get(0).getDirection();
+        Direction direction = positionData.get(0).getDirection();
 
-        if(direction == Direction.LEFT) {
+        if(direction == Direction.Left) {
             if(x - 9 == this.x && y == this.y){
                 return true;
             }
         }
-        if(direction == Direction.RIGHT) {
+        if(direction == Direction.Right) {
             if(x + 9 == this.x && y == this.y){
                 return true;
             }
         }
-        if(direction == Direction.UP) {
+        if(direction == Direction.Up) {
             if(x == this.x && y - 9 == this.y){
                 return true;
             }
         }
-        if(direction == Direction.DOWN) {
+        if(direction == Direction.Down) {
             if(x == this.x && y + 9 == this.y){
                 return true;
             }

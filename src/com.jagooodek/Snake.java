@@ -21,7 +21,7 @@ public class Snake implements ActionListener {
 
     private GamePanel gamePanel;
     private ScorePanel scorePanel;
-    private int nextDirection;
+    private Direction nextDirection;
 
     Snake(JFrame jFrame) {
         this.jFrame = jFrame;
@@ -96,7 +96,7 @@ public class Snake implements ActionListener {
         gamePanel.requestFocus();
 
         scorePanel.start();
-        nextDirection = Direction.LEFT;
+        nextDirection = Direction.Left;
     }
 
     private void initGame() {
@@ -155,26 +155,26 @@ public class Snake implements ActionListener {
             ArrayList<PositionData> positionData = gameData.getPositionData();
             if(keyEvent.getKeyCode() == KeyEvent.VK_LEFT)
             {
-                if(positionData.get(0).getDirection() != Direction.RIGHT && positionData.get(0).getDirection() != Direction.LEFT)
-                    nextDirection = Direction.LEFT;
+                if(positionData.get(0).getDirection() != Direction.Right && positionData.get(0).getDirection() != Direction.Left)
+                    nextDirection = Direction.Left;
             }
 
             if(keyEvent.getKeyCode() == KeyEvent.VK_RIGHT)
             {
-                if(positionData.get(0).getDirection() != Direction.LEFT && positionData.get(0).getDirection() != Direction.RIGHT)
-                    nextDirection = Direction.RIGHT;
+                if(positionData.get(0).getDirection() != Direction.Left && positionData.get(0).getDirection() != Direction.Right)
+                    nextDirection = Direction.Right;
             }
 
             if(keyEvent.getKeyCode() == KeyEvent.VK_UP)
             {
-                if(positionData.get(0).getDirection() != Direction.DOWN && positionData.get(0).getDirection() != Direction.UP)
-                    nextDirection = Direction.UP;
+                if(positionData.get(0).getDirection() != Direction.Down && positionData.get(0).getDirection() != Direction.Up)
+                    nextDirection = Direction.Up;
             }
 
             if(keyEvent.getKeyCode() == KeyEvent.VK_DOWN)
             {
-                if(positionData.get(0).getDirection() != Direction.UP && positionData.get(0).getDirection() != Direction.DOWN )
-                    nextDirection = Direction.DOWN;
+                if(positionData.get(0).getDirection() != Direction.Up && positionData.get(0).getDirection() != Direction.Up )
+                    nextDirection = Direction.Down;
             }
         }
     }
